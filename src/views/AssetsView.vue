@@ -10,8 +10,8 @@
 
     <AssetForm @asset-added="addAsset" class="mb-8" />
 
-    <div class="asset-list-section bg-[#282a31] rounded-lg shadow-lg p-6 border border-gray-700">
-      <h2 class="text-xl font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Daftar Asset</h2>
+    <div class="asset-list-section">
+      <h2 class="text-xl font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2 mx-5">Daftar Asset</h2>
       <AssetList 
         :assets="assets"
         @delete-asset="deleteAsset"

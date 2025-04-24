@@ -1,5 +1,5 @@
 <template>
-  <div class="reports-view p-6 max-w-6xl mx-auto">
+  <div class="reports-view p-4 max-w-6xl mx-auto">
     <h1 class="text-2xl font-bold text-[#35d58d] mb-8">Laporan Keuangan</h1>
     
  
@@ -14,33 +14,37 @@
 
 
 
-    <div class="section bg-[#282a31] rounded-lg p-6 shadow-lg border border-gray-700 mb-8">
+    <div class="section bg-[#282a31] rounded-lg p-4 shadow-lg border border-gray-700 mb-8">
       <h2 class="text-xl font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Perubahan 30 Hari Terakhir</h2>
       <div class="change-list space-y-3">
         <div 
           v-for="asset in assets" 
           :key="asset.id" 
-          class="change-item flex justify-between items-center py-3 px-4 bg-gray-700/50 p-4 rounded-lg border border-gray-600 mb-5 hover:bg-gray-700/50 transition-colors overflow-x-auto"
+          class="change-item flex justify-between items-center py-3 px-4 bg-gray-700/50 p-4 rounded-t-lg border border-gray-600 mb-5 hover:bg-gray-700/50 transition-colors overflow-x-auto"
         >
           <span class="text-gray-200 mr-5 whitespace-nowrap">{{ asset.name }}</span>
-          <span :class="['font-medium ml-5', getChangeClass(calculate30DayChange(asset))]">
-            {{ formatCurrency(calculate30DayChange(asset)) }}
+          <span :class="['font-medium ml-5 whitespace-nowrap', getChangeClass(calculate30DayChange(asset))]">
+            {{ calculate30DayChange(asset) >= 0 ? '+' + formatCurrency(calculate30DayChange(asset)) : formatCurrency(calculate30DayChange(asset)) }}
           </span>
         </div>
       </div>
+      <div class="flex justify-end mr-2 text-sm">Total (Change): {{ getTotal30DayChangeRaw() >= 0 ? '+' + formatCurrency(getTotal30DayChangeRaw()) : formatCurrency(getTotal30DayChangeRaw()) }}</div>
     </div>
 
-    <div class="section bg-[#282a31] rounded-lg p-6 shadow-lg border border-gray-700 w-full">
-        <h2 class="text-xl font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Transaksi Terakhir</h2>
+    <div class="section bg-[#282a31] rounded-lg shadow-lg border border-gray-700 w-full">
+        <div class="p-6">
+            <h2 class="text-xl font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Transaksi Terakhir</h2>
+        </div>
+        
         
         <div class="overflow-x-auto pb-3">
-            <table class="w-full">
+            <table class="w-full border-t border-gray-700 pt-4">
             <thead>
                 <tr class="text-gray-400 text-left border-b border-gray-700">
-                <th class="pb-3 font-medium min-w-[100px]">Tanggal</th>
-                <th class="pb-3 font-medium min-w-[150px]">Asset</th>
-                <th class="pb-3 font-medium min-w-[160px]">Deskripsi</th>
-                <th class="pb-3 font-medium text-right min-w-[120px]">Jumlah</th>
+                <th class="pt-2 pb-3 font-medium px-5">Tanggal</th>
+                <th class="pt-2 pb-3 font-medium px-5">Asset</th>
+                <th class="pt-2 pb-3 font-medium px-5">Deskripsi</th>
+                <th class="pt-2 pb-3 font-medium text-right px-5">Jumlah</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,10 +58,10 @@
                 :key="tx.id" 
                 class="border-b border-gray-700 hover:bg-gray-700/50 transition-colors"
                 >
-                <td class="py-3 text-gray-400 text-sm">{{ formatDate(tx.date) }}</td>
-                <td class="py-3 text-[#35d58d] font-medium">{{ getAssetName(tx.assetId) }}</td>
-                <td class="py-3 text-gray-300">{{ tx.description.length>14 ? tx.description.substring(0, 15) + '...' :  tx.description }}</td>
-                <td :class="['py-3 font-bold text-right text-nowrap', tx.amount >= 0 ? 'text-[#35d58d]' : 'text-red-400']">
+                <td class="py-3 px-5 text-gray-400 text-sm">{{ formatDate(tx.date) }}</td>
+                <td class="py-3 px-5 text-[#35d58d] font-medium">{{ getAssetName(tx.assetId) }}</td>
+                <td class="py-3 px-5 text-gray-300">{{ tx.description.length>14 ? tx.description.substring(0, 15) + '...' :  tx.description }}</td>
+                <td :class="['py-3 px-5 font-bold text-right text-nowrap', tx.amount >= 0 ? 'text-[#35d58d]' : 'text-red-400']">
                     {{ formatCurrency(tx.amount) }}
                 </td>
                 </tr>
@@ -135,6 +139,14 @@ export default {
       return asset ? asset.name : 'Unknown'
     }
 
+    const getTotal30DayChangeRaw = () => {
+    let total = 0;
+    assets.value.forEach(asset => {
+        total += calculate30DayChange(asset);
+    });
+    return total;
+    }
+
     return {
       assets,
       totalAssets,
@@ -144,7 +156,8 @@ export default {
       formatDate,
       calculate30DayChange,
       getChangeClass,
-      getAssetName
+      getAssetName,
+      getTotal30DayChangeRaw
     }
   }
 }

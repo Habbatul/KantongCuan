@@ -1,23 +1,32 @@
 <template>
-  <div v-if="transactions.length > 0" class="transaction-list p-4 shadow-md rounded-2xl border border-[#949494]">
-    <div class="flex justify-between items-center mb-4">
-      <button 
-        @click="deleteAll"
-        class="text-base bg-red-800/10 hover:bg-gray-600 text-red-500 hover:text-red-300 py-2 px-4 rounded-lg transition-colors duration-200 border border-red-500/50 cursor-pointer"
-      >
-        Hapus Semua
-      </button>
+    <div id="riwayat-header" class="border py-2 px-3 rounded-lg  mb-4 pb-4">
+        <div class="flex justify-between items-center mb-4 border-b px-1 pb-2">
+            <h3 class="text-lg font-medium text-gray-200">Riwayat Transaksi</h3>
+            <span class="text-gray-400 text-sm">
+            {{ transactions.length }} transaksi
+            </span>
+        </div>
+
+        <div v-if="transactions.length > 0" class="flex w-full justify-start mt-5">
+            <button 
+                @click="deleteAll"
+                class="text-base bg-red-800/10 hover:bg-gray-600 text-red-500 hover:text-red-300 py-1 px-3 rounded-lg transition-colors duration-200 border border-red-500/50 cursor-pointer"
+            >
+                Hapus Semua
+            </button>
+        </div>
     </div>
 
+  <div v-if="transactions.length > 0" class="transaction-list rounded-2xl">
     <!-- Scrollable table wrapper -->
-    <div class="overflow-y-auto max-h-[400px] border border-gray-400 rounded-t bg-gray-700/60">
-      <table class="min-w-full text-left border-collapse">
+    <div class="overflow-y-auto border border-gray-500 rounded-t bg-gray-700/60">
+      <table class="min-w-full min text-left border-collapse">
         <thead>
           <tr class="text-gray-200 text-base bg-gray-800/20">
-            <th class="py-2 px-4 border-b border-r border-gray-400">Tanggal</th>
-            <th class="py-2 px-4 border-b border-r border-gray-400">Keterangan</th>
-            <th class="py-2 px-4 border-b border-r border-gray-400">Jumlah</th>
-            <th class="py-2 px-4 border-b border-gray-400">Aksi</th>
+            <th class="py-2 px-4 border-b border-r border-gray-500">Tanggal</th>
+            <th class="py-2 px-4 border-b border-r border-gray-500">Keterangan</th>
+            <th class="py-2 px-4 border-b border-r border-gray-500">Jumlah</th>
+            <th class="py-2 px-4 border-b border-gray-500">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -26,18 +35,18 @@
             :key="transaction.id" 
             class="text-base text-gray-200"
           >
-            <td class="py-2 px-4 border-r border-t border-gray-400 text-gray-400">{{ formatDate(transaction.date) }}</td>
-            <td class="py-2 px-4 border-r border-t border-gray-300 text-gray-300">{{ transaction.description }}</td>
+            <td class="py-2 px-4 border-r border-t border-gray-500 text-gray-400">{{ formatDate(transaction.date) }}</td>
+            <td class="text-sm py-2 px-4 border-r border-t border-gray-500 text-gray-300">{{ transaction.description }}</td>
             <td 
-              class="py-2 px-4 font-medium  border-t border-gray-400 whitespace-nowrap"
-              :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-500'"
+              class="py-2 px-4 font-medium  border-t border-gray-500 whitespace-nowrap"
+              :class="transaction.amount >= 0 ? 'text-green-600' : 'text-red-500/90'"
             >
               {{ formatCurrency(transaction.amount) }}
             </td>
-            <td class="py-2 px-4 border-l border-t border-gray-400">
+            <td class="py-2 px-4 border-l border-t border-gray-500">
               <button 
                 @click="deleteTransaction(transaction.id)"
-                class="text-base text-red-500 hover:underline cursor-pointer"
+                class="text-base text-red-500/80 hover:underline cursor-pointer"
               >
                 Hapus
               </button>
@@ -45,14 +54,17 @@
           </tr>
         </tbody>
         <tfoot>
-            <td class="border-gray-400 border-r">&NonBreakingSpace;</td>
-            <td class="border-gray-400 border-r">&NonBreakingSpace;</td>
-            <td class="border-gray-400 border-r">&NonBreakingSpace;</td>
-            <td class="">&NonBreakingSpace;</td>
-          </tfoot>
+            <tr>
+                <td class="border-gray-500 border-r">&NonBreakingSpace;</td>
+                <td class="border-gray-500 border-r">&NonBreakingSpace;</td>
+                <td class="border-gray-500 border-r">&NonBreakingSpace;</td>
+                <td class="">&NonBreakingSpace;</td>
+            </tr>
+        </tfoot>
       </table>
     </div>
   </div>
+
 </template>
 
 

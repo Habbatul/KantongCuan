@@ -1,32 +1,37 @@
 <template>
   <h3 class="text-xl ml-1 mb-4 text-gray-200 font-medium">Tambah Transaksi</h3>
-  <div class="border p-5 rounded-2xl  mb-5">
+  <div class="border p-5 rounded-2xl  mb-10">
     <form @submit.prevent="submitForm">
-      <div class="mb-3">
-        <label>Jenis Transaksi:</label>
-        <div class="rounded-lg px-2 flex flex-col gap-1 text-gray-400">
-        <label class="w-full">
-            <input 
-            type="radio" 
-            v-model="transaction.type" 
-            value="income"
-            checked
-            />
-            Pemasukan
-        </label>
-        <label class="w-full">
-            <input 
-            type="radio" 
-            v-model="transaction.type" 
-            value="expense"
-            />
-            Pengeluaran
-        </label>
+        <div class="mb-3 flex-row">
+            <div class="mb-1">Jenis Transaksi:</div>
+            <div class="rounded-lg px-2 flex flex-col gap-1 text-gray-400">
+                <div class="w-full">
+                <label class="inline-flex items-center gap-2 cursor-pointer">
+                    <input 
+                    type="radio" 
+                    v-model="transaction.type" 
+                    value="income"
+                    class="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-[#35d58d] checked:border-[#cecece] focus:outline-none"
+                    />
+                    <span>Pemasukan</span>
+                </label>
+                </div>
+                <div class="w-full">
+                <label class="inline-flex items-center gap-2 cursor-pointer">
+                    <input 
+                    type="radio" 
+                    v-model="transaction.type" 
+                    value="expense"
+                    class="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-[#ff6262] checked:border-[#cecece] focus:outline-none"
+                    />
+                    <span>Pengeluaran</span>
+                </label>
+                </div>
+            </div>
         </div>
-      </div>
       
-      <div class="mb-3">
-        <label for="amount">Jumlah (Rp):</label>
+      <div class="mb-3 flex-row">
+        <div class="mb-1" for="amount">Jumlah (Rp):</div>
         <input 
           type="number" 
           id="amount" 
@@ -36,9 +41,21 @@
           class="rounded-lg px-2 border border-[#4dd598]/20 bg-gray-700 w-full text-gray-400"
         />
       </div>
+
+      <!-- <div class="mb-3 flex-row">
+        <div class="mb-1" for="date">Tanggal :</div>
+        <input 
+          type="datetime-local" 
+          id="date" 
+          v-model="transaction.date" 
+          min="1"
+          required
+          class="rounded-lg px-2 border border-[#4dd598]/20 bg-gray-700 w-full text-gray-400"
+        />
+      </div> -->
       
       <div class="form-group mb-5">
-        <label for="description">Keterangan:</label>
+        <div class="mb-1" for="description">Keterangan:</div>
         <input 
           type="text" 
           id="description" 
@@ -59,8 +76,9 @@ export default {
     return {
       transaction: {
         type: 'income',
-        amount: 0,
-        description: ''
+        amount: '',
+        description: '',
+        date: ''
       }
     }
   },
@@ -69,15 +87,16 @@ export default {
       this.$emit('transaction-added', {
         type: this.transaction.type,
         amount: parseFloat(this.transaction.amount),
-        description: this.transaction.description
+        description: this.transaction.description,
       })
       this.resetForm()
     },
     resetForm() {
       this.transaction = {
         type: 'income',
-        amount: 0,
-        description: ''
+        amount: '',
+        description: '',
+        date: ''
       }
     }
   }

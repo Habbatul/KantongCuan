@@ -1,13 +1,13 @@
 <template>
-  <div class="transactions-view max-w-4xl mx-auto px-1">
+  <div class="transactions-view max-w-4xl mx-auto">
     <div class="flex items-center mb-6 ml-2">
       <router-link to="/assets" class="mr-2 text-xl font-medium text-[#30ab73] hover:text-green-200 transition-colors underline underline-offset-4">Asset</router-link>
       <h1 class="text-2xl font-bold text-[#35d58d]">/ Transaksi Asset</h1>
     </div>
 
-    <div v-if="asset" class="bg-[#282a31] rounded-lg shadow-lg p-3 border border-gray-700">
+    <div v-if="asset">
 
-      <div class="flex-row space-y-2 items-center mb-6">
+      <div class="flex-row space-y-2 items-center mb-6 mx-2 border p-3">
         <div>
           <h2 class="text-[1.4rem] font-semibold text-[#37dd92]">{{ asset.name }}</h2>
         </div>
@@ -17,16 +17,11 @@
       </div>
 
 
-      <TransactionForm @transaction-added="addTransaction" class="mb-8" />
+      <TransactionForm @transaction-added="addTransaction" />
 
 
       <div>
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-medium text-gray-200">Riwayat Transaksi</h3>
-          <span class="text-gray-400 text-sm">
-            {{ asset.transactions.length }} transaksi
-          </span>
-        </div>
+
         <TransactionList :transactions="asset.transactions" 
           @delete-transaction="handleDelete"
          @delete-all="handleDeleteAll"
