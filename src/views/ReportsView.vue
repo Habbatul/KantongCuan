@@ -105,8 +105,12 @@ export default {
         })
       })
       return allTx
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 5)
+            .sort((a, b) => {
+            const dateDiff = new Date(b.date) - new Date(a.date)
+            if (dateDiff !== 0) return dateDiff
+            return b.id - a.id
+            })
+            .slice(0, 5)
     })
 
     const formatCurrency = (value) => {

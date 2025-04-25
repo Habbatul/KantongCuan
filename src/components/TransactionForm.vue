@@ -42,7 +42,7 @@
         />
       </div>
 
-      <!-- <div class="mb-3 flex-row">
+      <div class="mb-3 flex-row">
         <div class="mb-1" for="date">Tanggal :</div>
         <input 
           type="datetime-local" 
@@ -52,7 +52,7 @@
           required
           class="rounded-lg px-2 border border-[#4dd598]/20 bg-gray-700 w-full text-gray-400"
         />
-      </div> -->
+      </div>
       
       <div class="form-group mb-5">
         <div class="mb-1" for="description">Keterangan:</div>
@@ -88,6 +88,7 @@ export default {
         type: this.transaction.type,
         amount: parseFloat(this.transaction.amount),
         description: this.transaction.description,
+        date: new Date(this.transaction.date).toISOString()
       })
       this.resetForm()
     },

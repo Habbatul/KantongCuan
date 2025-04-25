@@ -1,7 +1,7 @@
 <template>
   <div class="transactions-view max-w-4xl mx-auto">
     <div class="flex items-center mb-6 ml-2">
-      <router-link to="/assets" class="mr-2 text-xl font-medium text-[#30ab73] hover:text-green-200 transition-colors underline underline-offset-4">Asset</router-link>
+      <router-link to="/assets" class="mr-2 text-xl font-medium text-[#30ab73] hover:text-green-200 transition-colors underline underline-offset-2">Asset</router-link>
       <h1 class="text-2xl font-bold text-[#35d58d]">/ Transaksi Asset</h1>
     </div>
 
@@ -79,7 +79,7 @@ export default {
       
       asset.value.transactions.push({
         id: Date.now(),
-        date: new Date().toISOString(),
+        date: transactionData.date,
         description: transactionData.description,
         amount: amount,
         type: transactionData.type

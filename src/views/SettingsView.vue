@@ -1,5 +1,5 @@
 <template>
-  <div class="settings-view p-6 max-w-4xl mx-auto">
+  <div class="settings-view py-6 px-2 mx-auto">
 
 <div class="bg-[#282a31] rounded-lg shadow-lg border border-gray-700 p-6 mb-8">
   <h2 class="text-xl font-semibold text-gray-200 mb-4 border-b border-gray-700 pb-2">Manage Data</h2>
