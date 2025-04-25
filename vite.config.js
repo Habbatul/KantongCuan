@@ -16,7 +16,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  server: {
-    host: '0.0.0.0', // Mendengarkan di semua alamat IP (termasuk IP lokal)
-  },
+  base: '/KantongCuan/'
+  // server: {
+  //   host: '0.0.0.0', // Mendengarkan di semua alamat IP (termasuk IP lokal)
+  // },
 })
