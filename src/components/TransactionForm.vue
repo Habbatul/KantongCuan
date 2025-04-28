@@ -10,10 +10,10 @@
                     <input 
                     type="radio" 
                     v-model="transaction.type" 
-                    value="income"
-                    class="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-[#35d58d] checked:border-[#cecece] focus:outline-none"
+                    value="expense"
+                    class="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-[#ff6262] checked:border-[#cecece] focus:outline-none"
                     />
-                    <span>Pemasukan</span>
+                    <span>Pengeluaran</span>
                 </label>
                 </div>
                 <div class="w-full">
@@ -21,10 +21,10 @@
                     <input 
                     type="radio" 
                     v-model="transaction.type" 
-                    value="expense"
-                    class="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-[#ff6262] checked:border-[#cecece] focus:outline-none"
+                    value="income"
+                    class="appearance-none w-4 h-4 border border-gray-400 rounded-full checked:bg-[#35d58d] checked:border-[#cecece] focus:outline-none"
                     />
-                    <span>Pengeluaran</span>
+                    <span>Pemasukan</span>
                 </label>
                 </div>
             </div>
@@ -75,10 +75,11 @@ export default {
   data() {
     return {
       transaction: {
-        type: 'income',
-        amount: '',
+        type: 'expense',
+        amount: 0,
         description: '',
-        date: ''
+        date: new Date().toISOString().slice(0, 16),
+        isSaved: false
       }
     }
   },
@@ -88,16 +89,18 @@ export default {
         type: this.transaction.type,
         amount: parseFloat(this.transaction.amount),
         description: this.transaction.description,
-        date: new Date(this.transaction.date).toISOString()
+        date: new Date(this.transaction.date).toISOString(),
+        isSaved: false
       })
       this.resetForm()
     },
     resetForm() {
       this.transaction = {
-        type: 'income',
+        type: 'expense',
         amount: '',
         description: '',
-        date: ''
+        date: new Date().toISOString().slice(0, 16),
+        isSaved: false
       }
     }
   }

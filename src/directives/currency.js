@@ -1,0 +1,3 @@
+// currency.js
+export default {
+}

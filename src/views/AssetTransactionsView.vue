@@ -11,9 +11,17 @@
         <div>
           <h2 class="text-[1.4rem] font-semibold text-[#37dd92]">{{ asset.name }}</h2>
         </div>
-        <span class="text-lg font-bold text-[#2db578d3]">
-          {{ formatCurrency(asset.currentBalance) }}
-        </span>
+        <div class="w-full flex items-center">
+
+            <span class="text-lg font-bold text-[#2db578d3]">
+            {{ formatCurrency(asset.currentBalance) }}
+            </span>
+
+            <button v-if="asset.isAllowChange" type="submit"  class="text-sm ml-2 py-1 px-2 cursor-pointer btn-import flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-600 text-[#35d58d] hover:text-green-300 rounded-lg transition-colors duration-200 border border-[#4dd598]/80" @click="applyChangeCurrentBalance">    
+                <span class="relative bottom-[0.05rem]">Save</span>
+            </button>
+
+        </div>
       </div>
 
 
@@ -82,18 +90,39 @@ export default {
         date: transactionData.date,
         description: transactionData.description,
         amount: amount,
-        type: transactionData.type
+        type: transactionData.type,
+        isSaved: transactionData.isSaved
       })
       
+      asset.value.isAllowChange = true
       asset.value.currentBalance += amount
       saveData()
     }
 
     const handleDelete = (id) => {
-      if (!asset.value) return
-      asset.value.transactions = asset.value.transactions.filter(tx => tx.id !== id)
-      saveData()
+        if (!asset.value) return;
+
+        const transaction = asset.value.transactions.find(tx => tx.id === id);
+        console.log(transaction.isSaved)
+        if (!transaction.isSaved) {
+            asset.value.currentBalance -= transaction.amount;
+        }
+
+        asset.value.transactions = asset.value.transactions.filter(tx => tx.id !== id);
+
+        saveData();
     }
+
+
+    const applyChangeCurrentBalance = () => {
+        asset.value.isAllowChange = false
+        console.log(asset.value.isAllowChange)
+        asset.value.transactions.forEach(tx => {
+            tx.isSaved = true;
+        });
+        saveData()
+    }
+
 
     const handleDeleteAll = () => {
       if (!asset.value) return
@@ -118,7 +147,8 @@ export default {
       formatCurrency,
       addTransaction,
       handleDelete,
-      handleDeleteAll
+      handleDeleteAll,
+      applyChangeCurrentBalance
     }
   },
     watch: {

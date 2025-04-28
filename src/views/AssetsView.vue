@@ -64,6 +64,7 @@ export default {
         name: newAsset.name,
         initialBalance: newAsset.initialBalance,
         currentBalance: newAsset.initialBalance,
+        isAllowChange: false,
         transactions: []
       })
       saveData()

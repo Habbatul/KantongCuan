@@ -25,6 +25,14 @@ const routes = [
     }
   },
   {
+    path: '/test',
+   name: 'test',
+    component: () => import('../views/Test.vue'),
+    meta: {
+      title: 'Laporan Keuangan'
+    }
+  },
+  {
     path: '/reports',
     name: 'reports',
     component: () => import('../views/ReportsView.vue'),
