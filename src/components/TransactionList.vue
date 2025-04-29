@@ -17,35 +17,22 @@
         </div>
     </div>
 
-    <!-- modal delete yak  -->
-     <teleport to="body">
-        <div v-if="showConfirmModal" class="px-8 fixed inset-0 bg-black/70 bg-opacity-60 flex items-center justify-center z-50" @click="showConfirmModal = false">
-            <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg w-80" @click.stop>
-            <h2 class="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
-            <p class="mb-6 text-sm text-gray-300">
-                Apakah kamu yakin ingin menghapus semua transaksi? Tindakan ini tidak bisa dibatalkan.
-            </p>
-            <div class="flex justify-end space-x-3">
-                <button 
-                @click="showConfirmModal = false"
-                class="bg-gray-600 hover:bg-gray-500 text-sm px-4 py-2 rounded cursor-pointer"
-                >
-                Batal
-                </button>
-                <button 
-                @click="() => { confirmDelete() }"
-                class="bg-red-600 hover:bg-red-500 text-sm px-4 py-2 rounded cursor-pointer"
-                >
-                Delete
-                </button>
-            </div>
-            </div>
-        </div>
-    </teleport>
+    <transaction-delete-modal 
+    :show="showConfirmModal"
+    @close="showConfirmModal = false"
+    @confirm="() => { deleteAll() }"
+    />
+
+    <transaction-edit-modal
+      v-if="showEditModal"
+      :transaction-data="selectedTransaction"
+      @close="showEditModal = false"
+      @submit="handleTransactionUpdate"
+    />
 
 
   <div v-if="transactions.length > 0" class="transaction-list rounded-2xl">
-    <!-- Scrollable table wrapper -->
+
     <div class="overflow-y-auto border border-gray-500 rounded-t bg-gray-700/60">
       <table class="min-w-full min text-left border-collapse">
         <thead>
@@ -71,12 +58,23 @@
               {{ formatCurrency(transaction.amount) }}
             </td>
             <td class="py-2 px-4 border-l border-t border-gray-500">
-              <button 
-                @click="deleteTransaction(transaction.id)"
-                class="text-base text-red-500/80 hover:underline cursor-pointer"
-              >
-                Hapus
-              </button>
+                <ul>
+
+                    <li v-if="!transaction.isSaved">
+                        <button @click="UpdateTransaction(transaction.id)" 
+                        class="text-base text-green-500/80 hover:underline cursor-pointer">
+                            Ubah
+                        </button>
+                    </li>
+
+                    <li>
+                        <button @click="deleteTransaction(transaction.id)"
+                        class="text-base text-red-500/80 hover:underline cursor-pointer">
+                            Hapus
+                        </button>
+                    </li>
+
+                </ul>
             </td>
           </tr>
         </tbody>
@@ -96,30 +94,37 @@
 
 
 <script>
+import TransactionEditModal from './modal/TransactionEditModal.vue'
+import TransactionDeleteModal from './modal/TransactionDeleteModal.vue'
+
 export default {
+  components: {
+    TransactionEditModal,
+    TransactionDeleteModal
+  },
   props: {
     transactions: {
       type: Array,
-      required: true
+      required: true,
+      default: () => []
     }
   },
   data() {
     return {
-      showConfirmModal: false
+      showConfirmModal: false,
+      showEditModal: false,
+      selectedTransaction: null
     }
   },
   computed: {
     sortedTransactions() {
-        return [...this.transactions].sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-
-            //tanggal beda pakek id ngurutinnya id=new date()
-            const diff = dateB.getTime() - dateA.getTime();
-            if (diff !== 0) return diff;
-
-            return b.id - a.id;
-        });
+      return [...this.transactions].sort((a, b) => {
+        const dateA = new Date(a.date)
+        const dateB = new Date(b.date)
+        
+        //tanggal beda pakek id ngurutinnya id=new date()
+        return dateB - dateA || b.id - a.id
+      })
     }
   },
   methods: {
@@ -128,35 +133,59 @@ export default {
         style: 'currency',
         currency: 'IDR',
         minimumFractionDigits: 0
-      }).format(value);
+      }).format(value)
     },
     formatDate(dateString) {
-        const options = { 
+      const options = { 
         year: '2-digit', 
         month: 'short', 
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-        };
-
-        return new Date(dateString).toLocaleString('id-ID', options);
+      }
+      return new Date(dateString).toLocaleString('id-ID', options)
     },
     deleteTransaction(id) {
-      this.$emit('delete-transaction', id);
+      this.$emit('delete-transaction', id)
     },
     deleteAll() {
-      this.$emit('delete-all');
-    },
-    openConfirmModal() {
-      this.showConfirmModal = true
-    },
-    closeConfirmModal() {
+      this.$emit('delete-all')
       this.showConfirmModal = false
     },
-    confirmDelete() {
-      this.deleteAll()
-      this.closeConfirmModal()
+
+
+    openEditModal(transaction) {
+      const date = new Date(transaction.date)
+      const formattedDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+        .toISOString().slice(0, 16)
+      
+      this.selectedTransaction = {
+        ...transaction,
+        date: formattedDate,
+        amount: Math.abs(transaction.amount)
+      }
+      this.showEditModal = true
     },
+    handleTransactionUpdate(updatedTransaction) {
+      const amount = updatedTransaction.type === 'income' 
+        ? updatedTransaction.amount 
+        : -updatedTransaction.amount
+      
+      const transactionToUpdate = {
+        ...updatedTransaction,
+        amount: amount,
+        date: new Date(updatedTransaction.date).toISOString()
+      }
+      
+      this.$emit('update-transaction', transactionToUpdate)
+      this.showEditModal = false
+    },
+    UpdateTransaction(id) {
+      const transaction = this.transactions.find(t => t.id === id)
+      if (transaction) {
+        this.openEditModal(transaction)
+      }
+    }
   }
 }
 </script>

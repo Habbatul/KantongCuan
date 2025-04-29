@@ -30,10 +30,12 @@
 
       <div>
 
-        <TransactionList :transactions="asset.transactions" 
-          @delete-transaction="handleDelete"
-         @delete-all="handleDeleteAll"
-        />
+<TransactionList 
+  :transactions="asset.transactions" 
+  @delete-transaction="handleDelete"
+  @delete-all="handleDeleteAll"
+  @update-transaction="updateTransaction"
+/>
       </div>
     </div>
 
@@ -113,6 +115,19 @@ export default {
         saveData();
     }
 
+    const handleDeleteAll = () => {
+    if (!asset.value) return;
+    
+    const totalUnsavedAmount = asset.value.transactions
+        .filter(tx => tx.isSaved === false)
+        .reduce((sum, tx) => sum + tx.amount, 0);
+    
+    asset.value.currentBalance -= totalUnsavedAmount;
+    
+    asset.value.transactions = [];
+    
+    saveData();
+    }
 
     const applyChangeCurrentBalance = () => {
         asset.value.isAllowChange = false
@@ -121,13 +136,6 @@ export default {
             tx.isSaved = true;
         });
         saveData()
-    }
-
-
-    const handleDeleteAll = () => {
-      if (!asset.value) return
-      asset.value.transactions = []
-      saveData()
     }
 
     const saveData = () => {
@@ -142,13 +150,32 @@ export default {
       }
     }
 
+    const updateTransaction = (updatedTransaction) => {
+    if (!asset.value) return
+    
+    const index = asset.value.transactions.findIndex(t => t.id === updatedTransaction.id)
+    if (index !== -1) {
+        const oldAmount = asset.value.transactions[index].amount
+        const newAmount = updatedTransaction.amount
+        
+        if (!asset.value.transactions[index].isSaved) {
+        asset.value.currentBalance += (newAmount - oldAmount)
+        }
+        
+        asset.value.transactions[index] = updatedTransaction
+        asset.value.isAllowChange = true
+        saveData()
+    }
+    }
+
     return {
       asset,
       formatCurrency,
       addTransaction,
       handleDelete,
       handleDeleteAll,
-      applyChangeCurrentBalance
+      applyChangeCurrentBalance,
+      updateTransaction
     }
   },
     watch: {
